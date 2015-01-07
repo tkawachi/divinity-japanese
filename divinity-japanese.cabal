@@ -25,5 +25,6 @@ executable divinity-japanese
                        , http-client >=0.4 && <0.5
                        , bytestring >=0.10 && <0.11
                        , directory >=1.2 && <1.3
+                       , process >=1.2 && <1.3
   -- hs-source-dirs:      
   default-language:    Haskell2010

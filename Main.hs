@@ -7,6 +7,7 @@ import Control.Lens
 import Network.HTTP.Client (defaultManagerSettings, managerResponseTimeout)
 import qualified Data.ByteString.Lazy as BS
 import System.Directory (getHomeDirectory)
+import System.Process (runProcess)
 
 -- 有志による訳をダウンロード
 -- see http://www.geocities.jp/memo_srv/divinity_os/index.html
@@ -27,5 +28,9 @@ downloadXml xmlPath = do
 main :: IO ()
 main = do
   home <- getHomeDirectory
-  let xmlPath = home ++ "/Library/Application Support/Steam/SteamApps/common/Divinity - Original Sin/Divinity - Original Sin.app/Contents/Data/Localization/English/english.xml"
+  let appPath = home ++ "/Library/Application Support/Steam/SteamApps/common/Divinity - Original Sin/Divinity - Original Sin.app"
+  let xmlPath = appPath ++ "/Contents/Data/Localization/English/english.xml"
   downloadXml xmlPath
+  putStrLn "Launching the game."
+  proc <- runProcess "open" [appPath] Nothing Nothing Nothing Nothing Nothing
+  return ()
