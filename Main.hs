@@ -6,7 +6,10 @@ import Network.Wreq
 import Control.Lens
 import Network.HTTP.Client (defaultManagerSettings, managerResponseTimeout)
 import qualified Data.ByteString.Lazy as BS
+import System.Directory (getHomeDirectory)
 
+-- 有志による訳をダウンロード
+-- see http://www.geocities.jp/memo_srv/divinity_os/index.html
 downloadXml :: FilePath -> IO ()
 downloadXml xmlPath = do
   let timeoutSecs = 120
@@ -23,5 +26,6 @@ downloadXml xmlPath = do
 
 main :: IO ()
 main = do
-  let xmlPath = "/Users/kawachi/Library/Application Support/Steam/SteamApps/common/Divinity - Original Sin/Divinity - Original Sin.app/Contents/Data/Localization/English/english.xml"
+  home <- getHomeDirectory
+  let xmlPath = home ++ "/Library/Application Support/Steam/SteamApps/common/Divinity - Original Sin/Divinity - Original Sin.app/Contents/Data/Localization/English/english.xml"
   downloadXml xmlPath
