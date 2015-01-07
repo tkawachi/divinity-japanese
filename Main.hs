@@ -2,12 +2,14 @@
 module Main
        where
 
-import Network.Wreq
 import Control.Lens
+import Control.Monad
+import Network.Wreq
 import Network.HTTP.Client (defaultManagerSettings, managerResponseTimeout)
 import qualified Data.ByteString.Lazy as BS
 import System.Directory (getHomeDirectory)
 import System.Process (runProcess)
+import System.Environment (getArgs)
 
 -- 有志による訳をダウンロード
 -- see http://www.geocities.jp/memo_srv/divinity_os/index.html
@@ -25,12 +27,17 @@ downloadXml xmlPath = do
   BS.writeFile xmlPath (resp ^. responseBody)
   putStrLn $ "Saved as " ++ xmlPath
 
+--
+-- Command line arguments:
+-- -d: download Japanese language XML
 main :: IO ()
 main = do
+  args <- getArgs
   home <- getHomeDirectory
   let appPath = home ++ "/Library/Application Support/Steam/SteamApps/common/Divinity - Original Sin/Divinity - Original Sin.app"
-  let xmlPath = appPath ++ "/Contents/Data/Localization/English/english.xml"
-  downloadXml xmlPath
+  when ("-d" `elem` args) $ do
+    let xmlPath = appPath ++ "/Contents/Data/Localization/English/english.xml"
+    downloadXml xmlPath
   putStrLn "Launching the game."
   proc <- runProcess "open" [appPath] Nothing Nothing Nothing Nothing Nothing
   return ()
