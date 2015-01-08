@@ -25,16 +25,25 @@ downloadXml xmlPath = do
   BS.writeFile xmlPath (resp ^. responseBody)
   putStrLn $ "Saved as " ++ xmlPath
 
+getAppPath :: IO FilePath
+getAppPath = do
+  home <- getHomeDirectory
+  return $ home ++ "/Library/Application Support/Steam/SteamApps/common/Divinity - Original Sin/Divinity - Original Sin.app"
+
+getXmlPath :: IO FilePath
+getXmlPath = do
+  appPath <- getAppPath
+  return $ appPath ++ "/Contents/Data/Localization/English/english.xml"
+
 --
 -- Command line arguments:
 -- -d: download Japanese language XML
 main :: IO ()
 main = do
   args <- getArgs
-  home <- getHomeDirectory
-  let appPath = home ++ "/Library/Application Support/Steam/SteamApps/common/Divinity - Original Sin/Divinity - Original Sin.app"
+  appPath <- getAppPath
   when ("-d" `elem` args) $ do
-    let xmlPath = appPath ++ "/Contents/Data/Localization/English/english.xml"
+    xmlPath <- getXmlPath
     downloadXml xmlPath
   putStrLn "Launching the game."
   proc <- runProcess "open" [appPath] Nothing Nothing Nothing Nothing Nothing
